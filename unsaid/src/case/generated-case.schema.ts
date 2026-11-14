@@ -1,10 +1,12 @@
+//AI가 만든 사건이 양식대로 채워졌는지 검사
 import { z } from 'zod';
 import { MAX_SUSPECTS, MIN_SUSPECTS } from './case.constants.js';
+//statementSchema (진술) -> suspectSchema (용의자) -> generatedCaseSchema (사건 전체)
 
 const statementSchema = z.object({
   id: z.string().min(1),
   text: z.string().min(1),
-  isTrue: z.boolean(),
+  isTrue: z.boolean(), //진술에 대한 모순 (isTrue)
 });
 
 const suspectSchema = z.object({
@@ -17,7 +19,7 @@ const suspectSchema = z.object({
   claimedAlibi: z.string().min(1),
   truthAboutNight: z.string().min(1),
   secret: z.string().min(1),
-  statements: z.array(statementSchema).length(4),
+  statements: z.array(statementSchema).length(4), //진술은 4개 고정
 });
 
 const clueSchema = z.object({
@@ -33,8 +35,10 @@ const contradictionSchema = z.object({
   suspectId: z.string().min(1),
   statementId: z.string().min(1),
   refutedBy: z.array(z.string().min(1)).min(1),
+  //진술이 모순임을 확인할 수 있는 근거가 하나는 있어야함 
   explanation: z.string().min(1),
 });
+// 정답지 : 어떤 진술/어떤 단서가 서로 모순을 이루는지 서버에한테 알려줌
 
 export const generatedCaseSchema = z.object({
   title: z.string().min(1),

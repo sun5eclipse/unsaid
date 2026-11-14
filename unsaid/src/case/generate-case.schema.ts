@@ -1,3 +1,4 @@
+//플레이어가 보낸 설정값을 검사하는 입구 검사표
 import { z } from 'zod';
 import {
   CASE_TYPE_KEYS,
@@ -20,3 +21,4 @@ export const generateCaseSchema = z.object({
 });
 
 export type GenerateCaseRequest = z.infer<typeof generateCaseSchema>;
+//검사 규칙을 통과한 데이터의 타입

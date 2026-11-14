@@ -26,13 +26,14 @@ export class CaseController {
         return{
             settings,
             derived:{
-                    ...deriveCaseNumbers(settings.suspectCount),
-                    contradictions: DIFFICULTY_RULES[settings.difficulty].contradictions,
-                },
-                userPrompt: buildCaseUserPrompt(settings),
-            };
-        }
+                ...deriveCaseNumbers(settings.suspectCount),
+                contradictions: DIFFICULTY_RULES[settings.difficulty].contradictions,
+            },
+            userPrompt: buildCaseUserPrompt(settings),
+        };
+    }
     @Get('sample-check')
+    //샘플 사건으로 검사표를 시험함
     sampleCheck() {
         const result = generatedCaseSchema.safeParse(sampleCase);
         if (!result.success) {
