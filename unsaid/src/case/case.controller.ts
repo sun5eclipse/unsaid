@@ -6,9 +6,11 @@ import { buildCaseUserPrompt } from './case.prompt.js';
 import { generatedCaseSchema } from './generated-case.schema.js';
 import { sampleCase } from './sample-case.js';
 import { validateCaseAgainstRequest } from './case.validator.js';
+import { CaseService } from './case.service.js';
 
 @Controller('case')
 export class CaseController {
+    constructor(private readonly caseService: CaseService) {}
     @Post('preview')
     preview(@Body() body : unknown){
         const parsed = generateCaseSchema.safeParse(body);
@@ -62,4 +64,17 @@ export class CaseController {
             title: result.data.title,
         };
     }
+    @Post('generate')
+    async generate(@Body() body: unknown) {
+    const parsed = generateCaseSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException(
+        parsed.error.issues.map((issue) => ({
+          field: issue.path.join('.'),
+          message: issue.message,
+        })),
+      );
+    }
+    return this.caseService.generate(parsed.data);
+  }
 }
