@@ -7,6 +7,7 @@ import { generatedCaseSchema } from './generated-case.schema.js';
 import { sampleCase } from './sample-case.js';
 import { validateCaseAgainstRequest } from './case.validator.js';
 import { CaseService } from './case.service.js';
+import { createCaseSeed } from './case.seed.js';
 
 @Controller('case')
 export class CaseController {
@@ -25,13 +26,15 @@ export class CaseController {
         }
         
         const settings = parsed.data;
+        const seed = createCaseSeed(settings);
         return{
             settings,
             derived:{
                 ...deriveCaseNumbers(settings.suspectCount),
                 contradictions: DIFFICULTY_RULES[settings.difficulty].contradictions,
             },
-            userPrompt: buildCaseUserPrompt(settings),
+            userPrompt: buildCaseUserPrompt(settings,seed),
+            seed,
         };
     }
     @Get('sample-check')
