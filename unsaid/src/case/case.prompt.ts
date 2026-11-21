@@ -24,6 +24,7 @@ export const CASE_SYSTEM_PROMPT = [
   '8. 모순(contradictions)은 범인의 진술에 대해서만 만듭니다.',
   '   - 모순의 대상 진술은 isTrue: false 여야 합니다.',
   '   - refutedBy에는 그 진술을 실제로 깨뜨리는 단서 id 또는 다른 용의자의 진술 id를 적습니다.',
+  '   - refutedBy에는 대상 진술(statementId) 자신을 넣지 않습니다.',
   '   - 적힌 근거가 논리적으로 정말 그 진술과 충돌해야 합니다. 충돌하지 않는 것을 모순이라고 적지 않습니다.',
   '9. 범인이 아닌 용의자의 진술에는 진짜 모순이 없어야 합니다. 그들이 의심스러워 보이는 이유는 가짜 단서(isRedHerring: true)나 비밀로만 만들고, 가짜 단서에는 반드시 innocentExplanation을 적습니다.',
   '   - 단서의 pointsTo는 그 단서 때문에 의심받게 되는 용의자의 id입니다.',
@@ -50,14 +51,14 @@ const CASE_JSON_FORMAT = `{
     { "id": "c1", "description": "", "pointsTo": "의심받게 되는 용의자 id (가짜 단서는 범인이 아닌 id)", "isRedHerring": false, "innocentExplanation": "" }
   ],
   "contradictions": [
-    { "id": "k1", "type": "위에서 지정한 유형 값", "suspectId": "범인 id", "statementId": "위에서 지정한 대상 진술 id", "refutedBy": ["c3", "s1-2"], "explanation": "" }
+    { "id": "k1", "type": "위에서 지정한 유형 값", "suspectId": "범인 id", "statementId": "위에서 지정한 대상 진술 id", "refutedBy": ["이 진술을 깨뜨리는 단서 id 또는 다른 진술 id"], "explanation": "" }
   ],
   "solution": "진상 요약"
 }`;
 
 
 export function buildCaseUserPrompt(
-  settings: GenerateCaseRequest,
+  settings: GenerateCaseRequest,  
   seed: CaseSeed,
 ): string {
   const { clueCount, redHerringCount } = deriveCaseNumbers(
