@@ -7,7 +7,7 @@ import { generatedCaseSchema } from './generated-case.schema.js';
 import { sampleCase } from './sample-case.js';
 import { validateCaseAgainstRequest } from './case.validator.js';
 import { CaseService } from './case.service.js';
-import { createCaseSeed } from './case.seed.js';
+import { createCaseSeed , type CaseSeed} from './case.seed.js';
 
 @Controller('case')
 export class CaseController {
@@ -51,14 +51,24 @@ export class CaseController {
                 })),
             };
         }
-
         const settings = generateCaseSchema.parse({
             caseType: 'murder',
             mood: 'classic',
             suspectCount: 3,
             difficulty: 'hard',
         });
-        const problems = validateCaseAgainstRequest(result.data, settings);
+        const sampleSeed: CaseSeed = {
+            culpritId: 's2',
+            setting: '샘플',
+            motive: '샘플',
+            contradictionTypes: ['alibi'],
+            lieStatementIds: ['s2-1'],
+        };
+        const problems = validateCaseAgainstRequest(
+            result.data,
+            settings,
+            sampleSeed,
+        );
 
         return {
             ok: problems.length === 0,

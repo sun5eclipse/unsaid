@@ -2,10 +2,12 @@ import { DIFFICULTY_RULES } from './case.constants.js';
 import { deriveCaseNumbers } from './case.rules.js';
 import type { GenerateCaseRequest } from './generate-case.schema.js';
 import type { GeneratedCase } from './generated-case.schema.js';
+import type { CaseSeed } from './case.seed.js';
 
 export function validateCaseAgainstRequest(
   generated: GeneratedCase, //ai가 만든 사건
   settings: GenerateCaseRequest, //플레이어가 만든 설정
+  seed: CaseSeed,
 ): string[] {
   const problems: string[] = [];
   const { clueCount, redHerringCount } = deriveCaseNumbers(
@@ -140,6 +142,34 @@ export function validateCaseAgainstRequest(
       }
     }
   }
+  // 7. 서버가 지정한 씨앗(범인 번호, 모순 유형, 대상 진술)대로 만들었는지
+  if (generated.culpritId !== seed.culpritId) {
+    problems.push(
+      `culpritId가 지정값(${seed.culpritId})과 다릅니다: ${generated.culpritId}`,
+    );
+  }
 
+  seed.contradictionTypes.forEach((expectedType, index) => {
+    const expectedId = `k${index + 1}`;
+    const expectedStatementId = seed.lieStatementIds[index];
+    const contradiction = generated.contradictions.find(
+      (c) => c.id === expectedId,
+    );
+
+    if (!contradiction) {
+      problems.push(`모순 ${expectedId}가 없습니다.`);
+      return;
+    }
+    if (contradiction.type !== expectedType) {
+      problems.push(
+        `모순 ${expectedId}의 type이 지정값(${expectedType})과 다릅니다: ${contradiction.type}`,
+      );
+    }
+    if (contradiction.statementId !== expectedStatementId) {
+      problems.push(
+        `모순 ${expectedId}의 대상 진술이 지정값(${expectedStatementId})과 다릅니다: ${contradiction.statementId}`,
+      );
+    }
+  });
   return problems;
 }

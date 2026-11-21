@@ -1,6 +1,10 @@
 //AI가 만든 사건이 양식대로 채워졌는지 검사
 import { z } from 'zod';
-import { MAX_SUSPECTS, MIN_SUSPECTS } from './case.constants.js';
+import {
+  CONTRADICTION_TYPE_KEYS,
+  MAX_SUSPECTS,
+  MIN_SUSPECTS,
+} from './case.constants.js';
 //statementSchema (진술) -> suspectSchema (용의자) -> generatedCaseSchema (사건 전체)
 
 const statementSchema = z.object({
@@ -32,6 +36,7 @@ const clueSchema = z.object({
 
 const contradictionSchema = z.object({
   id: z.string().min(1),
+  type: z.enum(CONTRADICTION_TYPE_KEYS),
   suspectId: z.string().min(1),
   statementId: z.string().min(1),
   refutedBy: z.array(z.string().min(1)).min(1),

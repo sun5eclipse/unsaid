@@ -93,7 +93,7 @@ export class CaseService {
       };
     }
 
-    const problems = validateCaseAgainstRequest(parsed.data, settings);
+    const problems = validateCaseAgainstRequest(parsed.data, settings , seed);
     if (problems.length > 0) {
       return { ok: false, reason: '요청 대조 실패', problems, seed };
     }

@@ -165,6 +165,7 @@ export const sampleCase = {
   contradictions: [
     {
       id: 'k1',
+      type: 'alibi',
       suspectId: 's2',
       statementId: 's2-1',
       refutedBy: ['s3-2', 'c3'],

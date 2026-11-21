@@ -50,7 +50,7 @@ const CASE_JSON_FORMAT = `{
     { "id": "c1", "description": "", "pointsTo": "의심받게 되는 용의자 id (가짜 단서는 범인이 아닌 id)", "isRedHerring": false, "innocentExplanation": "" }
   ],
   "contradictions": [
-    { "id": "k1", "suspectId": "범인 id", "statementId": "위에서 지정한 대상 진술 id", "refutedBy": ["c3", "s1-2"], "explanation": "" }
+    { "id": "k1", "type": "위에서 지정한 유형 값", "suspectId": "범인 id", "statementId": "위에서 지정한 대상 진술 id", "refutedBy": ["c3", "s1-2"], "explanation": "" }
   ],
   "solution": "진상 요약"
 }`;
@@ -68,7 +68,7 @@ export function buildCaseUserPrompt(
 
   const contradictionLines = seed.contradictionTypes.map(
     (type, index) =>
-      `  - k${index + 1}: 대상 진술은 ${seed.lieStatementIds[index]} (isTrue: false). ${CONTRADICTION_TYPE_PROMPTS[type]}`,
+      `  - k${index + 1}: 대상 진술은 ${seed.lieStatementIds[index]} (isTrue: false), type 값은 "${type}". ${CONTRADICTION_TYPE_PROMPTS[type]}`,
   );
 
   return [
